@@ -30,7 +30,7 @@ function checksCreateTodosUserAvailability(request, response, next) {
     return next();
   }
   
-  return response.status(403).send();
+  return response.status(403).json({ error: 'The limit of 10 free todos has already been reached' });
 }
 
 function checksTodoExists(request, response, next) {
@@ -59,11 +59,20 @@ function checksTodoExists(request, response, next) {
   request.user = user;
 
   next();
-
 }
 
 function findUserById(request, response, next) {
-  // Complete aqui
+  const { id } = request.params;
+
+  const user = users.find((user) => user.id === id);
+
+  if(!user) {
+    return response.status(404).json({ error: 'User not found' });
+  }
+
+  request.user = user;
+
+  next();
 }
 
 app.post('/users', (request, response) => {
